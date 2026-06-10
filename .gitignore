@@ -1,0 +1,29 @@
+# LaTeX build artifacts
+*.aux
+*.log
+*.out
+*.bbl
+*.blg
+*.nav
+*.snm
+*.toc
+*.vrb
+*.pag
+*.cut
+texput.log
+.DS_Store
+
+# In-review / draft material — do not publish until decisions are out
+/act2026-revision/
+/EUMAS/
+/CAIS/
+/claudius-draft/
+/gecco-rewrite/
+/gecco-aaboh/
+/lyra-first-draft-gecco/
+/second_draft/
+/second-draft-final/
+/second-draft-diagram*
+/paperACT.*
+/eptcs.*
+/CLAUDE.md
