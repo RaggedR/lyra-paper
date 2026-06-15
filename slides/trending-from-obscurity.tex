@@ -1,0 +1,308 @@
+\documentclass[aspectratio=169,14pt]{beamer}
+
+% ── Theme ──────────────────────────────────────────────
+\usetheme{metropolis}
+\usepackage{appendixnumberbeamer}
+\usepackage{booktabs}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc}
+\usepackage{hyperref}
+
+% ── Colors (matching gecco-talk.tex) ──────────────────
+\definecolor{geckoBlue}{RGB}{25,50,95}
+\definecolor{geccoAccent}{RGB}{50,130,200}
+\definecolor{geccoHighlight}{RGB}{220,80,60}
+\definecolor{geccoGreen}{RGB}{40,160,80}
+\definecolor{dimGray}{RGB}{140,150,170}
+
+\setbeamercolor{frametitle}{bg=geckoBlue,fg=white}
+\setbeamercolor{title}{fg=white}
+\setbeamercolor{alerted text}{fg=geccoHighlight}
+\setbeamercolor{progress bar}{fg=geccoAccent}
+
+% ── Custom commands ───────────────────────────────────
+\newcommand{\repo}[2]{\texttt{\color{geccoAccent}\bfseries #1}{\color{dimGray}\scriptsize\ by #2}}
+\newcommand{\repoHL}[2]{\texttt{\color{geccoHighlight}\bfseries #1}{\color{dimGray}\scriptsize\ by #2}}
+\newcommand{\repoGR}[2]{\texttt{\color{geccoGreen}\bfseries #1}{\color{dimGray}\scriptsize\ by #2}}
+\newcommand{\bscore}[1]{{\color{geccoAccent}\bfseries #1}}
+\newcommand{\connection}[1]{%
+  \vspace{4pt}
+  {\small\color{geccoHighlight}\textbf{Connection to our work:} \color{white}#1}}
+
+% ── Meta ──────────────────────────────────────────────
+\title{Trending From Obscurity}
+\subtitle{What's Breaking Out in the Categorical GA Neighborhood}
+\author{Robin Langer \and Claudius Turing \and Lyra Vega}
+\institute{Contrarian Search Engine Report --- June 13, 2026}
+\date{}
+
+\begin{document}
+
+% ══════════════════════════════════════════════════════════
+% Slide 1: Title
+% ══════════════════════════════════════════════════════════
+{
+\setbeamercolor{background canvas}{bg=geckoBlue}
+\begin{frame}[plain]
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[geckoBlue] (current page.south west) rectangle (current page.north east);
+    \node[anchor=north west,text width=12cm]
+      at ([xshift=12mm,yshift=-12mm]current page.north west)
+      {{\LARGE\bfseries\color{white} Trending From}\\[6pt]
+       {\LARGE\bfseries\color{geccoAccent} Obscurity}\\[12pt]
+       {\normalsize\color{geccoAccent} What's Breaking Out in the Categorical GA Neighborhood}\\[20pt]
+       {\small\color{dimGray} Contrarian Search Engine Report --- June 13, 2026}};
+    \node[anchor=south west,text width=10cm]
+      at ([xshift=12mm,yshift=8mm]current page.south west)
+      {{\footnotesize\color{dimGray} Companion to \emph{Composition Determines Diversity} (GECCO 2026)}\\
+       {\footnotesize\color{dimGray} Robin Langer $\cdot$ Claudius Turing $\cdot$ Lyra Vega}};
+  \end{tikzpicture}
+\end{frame}
+}
+
+% ══════════════════════════════════════════════════════════
+% Slide 2: What We Searched
+% ══════════════════════════════════════════════════════════
+{
+\setbeamercolor{background canvas}{bg=geckoBlue}
+\begin{frame}[plain]{What We Searched}
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[geckoBlue] (current page.south west) rectangle (current page.north east);
+  \end{tikzpicture}
+  \vspace{-8pt}
+  \begin{center}
+    {\color{geccoAccent}\texttt{breakout\_score = activity / (popularity $\times$ age)}}\\[4pt]
+    {\small\color{dimGray} Only items under 50 stars/points $\cdot$ GitHub + Hacker News}
+  \end{center}
+  \vspace{8pt}
+  \begin{center}
+    \foreach \q in {genetic algorithm, category theory, spectral graph, island model,
+                    functor, diversity optimization, Lean4 math, optimization (HN)} {%
+      \tikz\node[rounded corners=8pt,draw=geccoAccent,text=geccoAccent,
+                 fill=geccoAccent!8,inner sep=4pt,font=\small]{\q};\hspace{2pt}%
+    }
+  \end{center}
+  \vspace{10pt}
+  {\small\color{dimGray}\centering
+    Scanning the research neighborhood around our GECCO paper:\\
+    \emph{lax monoidal functors, $\lambda_2$, migration graphs, island-model GAs}\par}
+\end{frame}
+}
+
+% ══════════════════════════════════════════════════════════
+% Slide 3: Category Theory on GitHub
+% ══════════════════════════════════════════════════════════
+\begin{frame}{Category Theory on GitHub}
+  {\small\color{dimGray} Small but active --- formalization is the trend}
+  \vspace{6pt}
+
+  \begin{itemize}
+    \item[\bscore{0.20}] \repo{basic-category-theory-lean4}{whoiam1101}\\
+      {\small CT formalized in Lean~4 --- categories, functors, natural transformations as verified proofs}
+    \vspace{4pt}
+    \item[] \repoGR{rulett}{ToposInstitute} {\small$\cdot$ 2\,\(\star\)}\\
+      {\small New project from the Topos Institute}
+    \vspace{4pt}
+    \item[] \repoHL{categorical-agents}{SuperInstance} {\small$\cdot$ C and Python}\\
+      {\small Categorical framework for multi-agent systems --- agents as morphisms?}
+    \vspace{4pt}
+    \item[] \repo{resource-diagrams}{formalsymbolic}\\
+      {\small Resource-theoretic string diagrams}
+  \end{itemize}
+
+  \connection{categorical-agents is the closest neighbor --- agents as categorical structures, like our GAs as lax monoidal functors. The Lean4 formalization trend could eventually verify our composition theorems.}
+\end{frame}
+
+% ══════════════════════════════════════════════════════════
+% Slide 4: Functors in the Wild
+% ══════════════════════════════════════════════════════════
+\begin{frame}{Functors in the Wild}
+  {\small\color{dimGray} People are building tools to see categorical structures}
+  \vspace{10pt}
+
+  \begin{itemize}
+    \item[\bscore{0.09}] \repo{hom-functor-viz}{jun-mitani}\\
+      {\small Interactive visualization of Hom functors --- making abstract algebra tangible.
+      Shows how morphism sets transform under functor application.}
+    \vspace{8pt}
+    \item[\bscore{0.05}] \repoHL{THE-FUNCTORIALITY-GULF}{ericrenone}\\
+      {\small Exploring the gap between functorial thinking and practical implementation --- the tension between theory and code.}
+  \end{itemize}
+
+  \vspace{10pt}
+  \connection{Our paper claims GAs \emph{are} functors (lax monoidal, migration graphs $\to$ optimization landscapes). hom-functor-viz could make our framework visual and intuitive. ``The Functoriality Gulf'' names the gap we're trying to bridge.}
+\end{frame}
+
+% ══════════════════════════════════════════════════════════
+% Slide 5: Spectral Graph Ecosystem
+% ══════════════════════════════════════════════════════════
+\begin{frame}{Spectral Graph Ecosystem}
+  {\small\color{dimGray} SuperInstance is prolific --- 15+ spectral repos in 2 weeks}
+  \vspace{6pt}
+
+  \begin{itemize}
+    \item[] \repo{holonomy\_lib}{Synoros-io} {\small$\cdot$ 13\,\(\star\)}\\
+      {\small Holonomy library --- parallel transport on graphs. Directly related to information flow through migration topologies.}
+    \vspace{4pt}
+    \item[] \repo{spectral-pruner}{steph4n-gh} {\small$\cdot$ 5\,\(\star\)}\\
+      {\small Neural network pruning via spectral methods --- eigenvalues to decide what to cut.}
+    \vspace{4pt}
+    \item[] \repoGR{spectral-cayley}{SuperInstance}\\
+      {\small Spectral analysis of Cayley graphs --- algebraic structure behind group symmetries.}
+  \end{itemize}
+
+  \vspace{2pt}
+  {\scriptsize\color{dimGray} Also from SuperInstance: spectral-graph-core, spectral-transport, spectral-emotions, spectral-spreadsheet, conservation-spectral-\{mojo,zig,pascal,js,ada,cuda,ptx\} --- one person, 15 repos, every language.}
+
+  \vspace{4pt}
+  \connection{We proved $\lambda_2$ predicts diversity. holonomy\_lib formalizes the transport structure we exploit. spectral-pruner uses eigenvalues for selection --- dual to our use for diversity prediction.}
+\end{frame}
+
+% ══════════════════════════════════════════════════════════
+% Slide 6: Genetic Algorithms Breaking Out
+% ══════════════════════════════════════════════════════════
+\begin{frame}{Genetic Algorithms Breaking Out}
+  {\small\color{dimGray} GitHub $\cdot$ last 30 days $\cdot$ under 50 stars}
+  \vspace{6pt}
+
+  \begin{itemize}
+    \item[\bscore{1.2}] \repo{melanoma-detection-system}{joynard}\\
+      {\small GA-assisted medical image analysis --- co-evolutionary fitness landscapes}
+    \vspace{3pt}
+    \item[\bscore{0.4}] \repo{CityMind}{bilalxfaisal}\\
+      {\small Urban planning optimization with genetic algorithms --- city design as search}
+    \vspace{3pt}
+    \item[\bscore{0.3}] \repoHL{GA-Assisted-DDR-RAM-Capacitor-Decoupling}{AspiringPianist}\\
+      {\small Hardware EDA: using GAs to optimize DDR RAM capacitor placement. Real engineering.}
+    \vspace{3pt}
+    \item[\bscore{0.2}] \repo{PuzzleEvo}{Jimmi1e}\\
+      {\small Puzzle solving with evolutionary methods}
+    \vspace{3pt}
+    \item[] \repoGR{evoFE}{tanopereira} {\small$\cdot$ 5\,\(\star\)}\\
+      {\small Evolutionary feature engineering --- using GAs to discover ML features}
+  \end{itemize}
+
+  \vspace{2pt}
+  \connection{Every one of these would benefit from topology-aware island models. DDR RAM decoupling is a perfect test domain: constrained, real-valued, engineering-critical.}
+\end{frame}
+
+% ══════════════════════════════════════════════════════════
+% Slide 7: HN Optimization Discourse
+% ══════════════════════════════════════════════════════════
+\begin{frame}{HN: The Optimization Conversation}
+  {\small\color{dimGray} What practitioners are actually discussing}
+  \vspace{8pt}
+
+  \begin{itemize}
+    \item[\bscore{35.5}] \textbf{``Can LLMs Beat Classical Hyperparameter Optimization?''}\\
+      {\small 120 comments. Evolutionary/Bayesian methods vs LLM-guided search.}
+    \vspace{6pt}
+    \item[\bscore{18.2}] \textbf{``Infinite canvas notes in the Poincar\'{e} half-plane''}\\
+      {\small 188 comments. Non-Euclidean geometry for knowledge organization.}
+    \vspace{6pt}
+    \item[\bscore{17.4}] {\color{geccoHighlight}\textbf{``Premature optimization is fun sometimes''}}\\
+      {\small 80 comments. The joy of optimization as craft.}
+    \vspace{6pt}
+    \item[\bscore{7.9}] \textbf{``Mach --- a compiled systems language''}\\
+      {\small New language designed for optimization-heavy workloads.}
+  \end{itemize}
+
+  \vspace{6pt}
+  \connection{The LLM vs classical optimization debate is \emph{exactly} where our paper lands. We show structural choices (topology) dominate parameter tuning --- whether you use GAs, LLMs, or Bayesian methods.}
+\end{frame}
+
+% ══════════════════════════════════════════════════════════
+% Slide 8: Lean 4 & Formalization
+% ══════════════════════════════════════════════════════════
+\begin{frame}{Lean 4 \& Math Formalization}
+  {\small\color{dimGray} The verified mathematics movement is accelerating}
+  \vspace{8pt}
+
+  \begin{itemize}
+    \item[\bscore{0.20}] \repoGR{basic-category-theory-lean4}{whoiam1101}\\
+      {\small CT in Lean~4 --- categories, functors, natural transformations as machine-checked proofs. Fresh (7 days old), actively developed.}
+    \vspace{6pt}
+    \item[\bscore{0.20}] \repo{mathlas}{Archerkattri} {\small$\cdot$ 3\,\(\star\)}\\
+      {\small Lean~4 mathematics library --- building mathematical infrastructure}
+    \vspace{6pt}
+    \item[] \repoHL{AI4Math-Putnam2025}{mathTensor} {\small$\cdot$ 15\,\(\star\)}\\
+      {\small AI approaches to Putnam competition problems --- automated mathematical reasoning}
+    \vspace{6pt}
+    \item[] \repo{proof-skills}{r-irbe} {\small$\cdot$ 2\,\(\star\)}\\
+      {\small Proof skill development tools}
+  \end{itemize}
+
+  \vspace{6pt}
+  {\small\color{geccoHighlight}\textbf{Future direction:} \color{white}Our lax monoidal functor construction could be formalized in Lean~4. A verified proof that $\lambda_2$ controls mixing rate would be a significant contribution.}
+\end{frame}
+
+% ══════════════════════════════════════════════════════════
+% Slide 9: The SuperInstance Phenomenon
+% ══════════════════════════════════════════════════════════
+\begin{frame}{The SuperInstance Phenomenon}
+  {\small\color{dimGray} One person, 20+ repos, two weeks --- a breakout signal}
+  \vspace{8pt}
+
+  \begin{center}
+  \foreach \r/\c in {%
+    categorical-agents/geccoAccent,
+    categorical-agents-c/geccoAccent,
+    spectral-cayley/geccoHighlight,
+    spectral-graph-core/geccoHighlight,
+    spectral-transport/geccoHighlight,
+    spectral-control/geccoHighlight,
+    spectral-emotions/geccoHighlight,
+    spectral-graphing-calculator/geccoGreen,
+    spectral-spreadsheet/geccoGreen,
+    graph-neural/geccoGreen,
+    conservation-spectral-mojo/geccoAccent,
+    conservation-spectral-zig/geccoAccent,
+    conservation-spectral-cuda/geccoAccent}{%
+    \tikz\node[rounded corners=3pt,fill=\c!10,inner sep=3pt,
+               font=\scriptsize\ttfamily\color{\c}]{\r};\hspace{1pt}%
+  }
+  \end{center}
+
+  \vspace{6pt}
+  Someone is independently exploring the \alert{exact intersection}
+  of category theory + spectral graph theory + agents.
+
+  \vspace{6pt}
+  {\small\color{geccoHighlight}\textbf{Action item:} \color{white}Reach out to SuperInstance. They're working at the intersection of categorical agents and spectral graph theory --- the exact territory of our GECCO paper. Potential collaborator.}
+\end{frame}
+
+% ══════════════════════════════════════════════════════════
+% Slide 10: Key Takeaways
+% ══════════════════════════════════════════════════════════
+{
+\setbeamercolor{background canvas}{bg=geckoBlue}
+\begin{frame}[plain]{Key Takeaways}
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[geckoBlue] (current page.south west) rectangle (current page.north east);
+  \end{tikzpicture}
+  \vspace{-4pt}
+  {\small\color{dimGray} What the breakout formula found in our research neighborhood}
+  \vspace{6pt}
+
+  \begin{enumerate}
+    \item \textbf{Category theory formalization is moving to Lean~4}\\
+      {\small basic-category-theory-lean4 is 7 days old. Our lax monoidal functor construction could be verified.}
+    \vspace{4pt}
+    \item \textbf{SuperInstance is a potential collaborator}\\
+      {\small 20+ repos at the intersection of categorical agents and spectral graph theory in 2 weeks.}
+    \vspace{4pt}
+    \item \textbf{GAs applied to real engineering} {\small(DDR RAM, urban planning)}\\
+      {\small These domains would directly benefit from topology-aware island models.}
+    \vspace{4pt}
+    \item \textbf{LLM vs classical optimization debate is live on HN}\\
+      {\small Our structural result (topology $>$ tuning) cuts across both camps.}
+    \vspace{4pt}
+    \item \textbf{Functor visualization tools are emerging}\\
+      {\small hom-functor-viz could show our GA-as-functor construction interactively at GECCO.}
+  \end{enumerate}
+\end{frame}
+}
+
+\end{document}

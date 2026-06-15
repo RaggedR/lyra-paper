@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trending From Obscurity — Categorical GA Neighborhood</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/black.css">
+<style>
+  :root {
+    --gecko-blue: rgb(25, 50, 95);
+    --gecco-accent: rgb(50, 130, 200);
+    --gecco-highlight: rgb(220, 80, 60);
+    --gecco-green: rgb(40, 160, 80);
+    --dim: rgba(180, 190, 210, 0.6);
+    --formula-bg: rgba(50, 130, 200, 0.08);
+  }
+  .reveal { font-family: 'Inter', 'Helvetica Neue', sans-serif; }
+  .reveal .slides { text-align: center; }
+  .reveal h1, .reveal h2, .reveal h3 { text-transform: none; font-weight: 700; }
+  .reveal h1 { font-size: 2.2em; }
+  .reveal h2 { font-size: 1.7em; }
+  .reveal .accent { color: var(--gecco-accent); }
+  .reveal .highlight { color: var(--gecco-highlight); }
+  .reveal .green { color: var(--gecco-green); }
+  .reveal .dim { color: var(--dim); }
+  .reveal .formula {
+    background: var(--formula-bg);
+    border: 1px solid var(--gecco-accent);
+    border-radius: 10px;
+    padding: 16px 28px;
+    font-family: 'Courier New', monospace;
+    font-size: 1em;
+    color: var(--gecco-accent);
+    margin: 16px auto;
+    display: inline-block;
+  }
+  .reveal .gem {
+    text-align: left;
+    margin: 10px 0;
+    padding: 10px 14px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 6px;
+    border-left: 3px solid var(--gecco-accent);
+  }
+  .reveal .gem.highlight-border { border-left-color: var(--gecco-highlight); }
+  .reveal .gem.green-border { border-left-color: var(--gecco-green); }
+  .reveal .gem .name { color: var(--gecco-accent); font-weight: 700; }
+  .reveal .gem .name.highlight { color: var(--gecco-highlight); }
+  .reveal .gem .name.green { color: var(--gecco-green); }
+  .reveal .gem .meta { color: var(--dim); font-size: 0.6em; }
+  .reveal .gem .desc { font-size: 0.6em; margin-top: 3px; }
+  .reveal .gem .score {
+    color: var(--gecco-accent);
+    font-weight: 700;
+    font-size: 0.85em;
+    float: right;
+  }
+  .reveal .story {
+    text-align: left;
+    margin: 10px 0;
+    padding: 10px 14px;
+    border-left: 3px solid var(--gecco-accent);
+    background: rgba(255,255,255,0.04);
+  }
+  .reveal .story .score {
+    color: var(--gecco-accent);
+    font-weight: 700;
+    font-size: 0.85em;
+    float: right;
+  }
+  .reveal .story h4 { margin: 0 0 4px 0; font-size: 0.8em; }
+  .reveal .story p { margin: 0; font-size: 0.55em; color: var(--dim); }
+  .reveal .takeaway {
+    text-align: left;
+    margin: 14px 0;
+    padding: 8px 0;
+  }
+  .reveal .takeaway .num {
+    color: var(--gecco-accent);
+    font-weight: 700;
+    font-size: 1.2em;
+    margin-right: 12px;
+  }
+  .reveal .takeaway h4 { display: inline; margin: 0; font-size: 0.8em; }
+  .reveal .takeaway p { margin: 4px 0 0 32px; font-size: 0.55em; color: var(--dim); }
+  .reveal .connection {
+    text-align: left;
+    margin: 8px 0;
+    padding: 8px 14px;
+    background: rgba(220,80,60,0.08);
+    border-radius: 6px;
+    border-left: 3px solid var(--gecco-highlight);
+    font-size: 0.6em;
+  }
+  .reveal .lambda2 {
+    font-family: 'Times New Roman', serif;
+    font-style: italic;
+    color: var(--gecco-highlight);
+  }
+  .reveal section[data-background-color] h1,
+  .reveal section[data-background-color] h2 { color: white; }
+</style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- Slide 1: Title -->
+<section data-background-color="rgb(25,50,95)">
+  <h1 style="color:white;">TRENDING FROM<br><span class="accent">OBSCURITY</span></h1>
+  <p style="font-size:0.75em; color:rgb(50,130,200);">What's Breaking Out in the Categorical GA Neighborhood</p>
+  <p class="dim" style="font-size:0.5em;">Contrarian Search Engine Report &mdash; June 13, 2026</p>
+  <p class="dim" style="font-size:0.45em; margin-top:30px;">
+    Companion to <em>Composition Determines Diversity</em> (GECCO 2026)<br>
+    Robin Langer &middot; Claudius Turing &middot; Lyra Vega
+  </p>
+</section>
+
+<!-- Slide 2: What We Searched -->
+<section data-background-color="rgb(25,50,95)">
+  <h2 style="color:white;">What We <span class="accent">Searched</span></h2>
+  <p class="dim" style="font-size:0.55em;">
+    breakout_score = activity / (popularity &times; age)<br>
+    Only items under 50 stars/points &middot; GitHub + Hacker News
+  </p>
+  <div style="display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-top:20px;">
+    <span style="background:rgba(50,130,200,0.15); border:1px solid rgb(50,130,200); border-radius:20px; padding:6px 16px; font-size:0.6em; color:rgb(50,130,200);">genetic algorithm</span>
+    <span style="background:rgba(50,130,200,0.15); border:1px solid rgb(50,130,200); border-radius:20px; padding:6px 16px; font-size:0.6em; color:rgb(50,130,200);">category theory</span>
+    <span style="background:rgba(50,130,200,0.15); border:1px solid rgb(50,130,200); border-radius:20px; padding:6px 16px; font-size:0.6em; color:rgb(50,130,200);">spectral graph</span>
+    <span style="background:rgba(50,130,200,0.15); border:1px solid rgb(50,130,200); border-radius:20px; padding:6px 16px; font-size:0.6em; color:rgb(50,130,200);">island model</span>
+    <span style="background:rgba(50,130,200,0.15); border:1px solid rgb(50,130,200); border-radius:20px; padding:6px 16px; font-size:0.6em; color:rgb(50,130,200);">functor</span>
+    <span style="background:rgba(50,130,200,0.15); border:1px solid rgb(50,130,200); border-radius:20px; padding:6px 16px; font-size:0.6em; color:rgb(50,130,200);">diversity optimization</span>
+    <span style="background:rgba(50,130,200,0.15); border:1px solid rgb(50,130,200); border-radius:20px; padding:6px 16px; font-size:0.6em; color:rgb(50,130,200);">Lean4 math</span>
+    <span style="background:rgba(50,130,200,0.15); border:1px solid rgb(50,130,200); border-radius:20px; padding:6px 16px; font-size:0.6em; color:rgb(50,130,200);">optimization (HN)</span>
+  </div>
+  <p class="dim" style="font-size:0.45em; margin-top:18px;">
+    Scanning the research neighborhood around our GECCO paper:<br>
+    <em>lax monoidal functors, <span class="lambda2">&lambda;<sub>2</sub></span>, migration graphs, island-model GAs</em>
+  </p>
+</section>
+
+<!-- Slide 3: Category Theory on GitHub -->
+<section>
+  <h2><span class="accent">Category Theory</span> on GitHub</h2>
+  <p class="dim" style="font-size:0.55em;">Small but active &mdash; formalization is the trend</p>
+
+  <div class="gem">
+    <span class="score">Score: 0.20</span>
+    <span class="name">basic-category-theory-lean4</span> <span class="meta">by whoiam1101</span>
+    <div class="desc">Category theory formalized in Lean 4 &mdash; categories, functors, natural transformations as verified proofs</div>
+  </div>
+  <div class="gem green-border">
+    <span class="score">Topos Institute</span>
+    <span class="name green">rulett</span> <span class="meta">by ToposInstitute &middot; 2 &#9733;</span>
+    <div class="desc">New project from the Topos Institute &mdash; the leading applied CT research group</div>
+  </div>
+  <div class="gem highlight-border">
+    <span class="score">2 repos</span>
+    <span class="name highlight">categorical-agents</span> <span class="meta">by SuperInstance &middot; C and Python</span>
+    <div class="desc">Categorical framework for multi-agent systems &mdash; agents as morphisms?</div>
+  </div>
+  <div class="gem">
+    <span class="name">resource-diagrams</span> <span class="meta">by formalsymbolic</span>
+    <div class="desc">Resource-theoretic string diagrams</div>
+  </div>
+
+  <div class="connection">
+    <strong>Connection to our work:</strong> categorical-agents is the closest neighbor &mdash; agents as categorical structures, like our GAs as lax monoidal functors. The Lean4 formalization trend could eventually verify our composition theorems.
+  </div>
+</section>
+
+<!-- Slide 4: Functors & Visualization -->
+<section>
+  <h2><span class="accent">Functors</span> in the Wild</h2>
+  <p class="dim" style="font-size:0.55em;">People are building tools to see categorical structures</p>
+
+  <div class="gem">
+    <span class="score">Score: 0.09</span>
+    <span class="name">hom-functor-viz</span> <span class="meta">by jun-mitani</span>
+    <div class="desc">Interactive visualization of Hom functors &mdash; making abstract algebra tangible.<br>Shows how morphism sets transform under functor application.</div>
+  </div>
+  <div class="gem highlight-border">
+    <span class="score">Score: 0.05</span>
+    <span class="name highlight">THE-FUNCTORIALITY-GULF</span> <span class="meta">by ericrenone</span>
+    <div class="desc">Exploring the gap between functorial thinking and practical implementation &mdash; the tension between theory and code.</div>
+  </div>
+
+  <div class="connection">
+    <strong>Connection to our work:</strong> Our paper's core claim is that GAs <em>are</em> functors (lax monoidal, migration graphs &rarr; optimization landscapes). hom-functor-viz is exactly the kind of tool that could make our abstract framework visual and intuitive. "The Functoriality Gulf" names the gap we're trying to bridge.
+  </div>
+</section>
+
+<!-- Slide 5: Spectral Graph Theory -->
+<section>
+  <h2><span class="highlight">Spectral Graph</span> Ecosystem</h2>
+  <p class="dim" style="font-size:0.55em;">SuperInstance is prolific &mdash; 15+ spectral repos in 2 weeks</p>
+
+  <div class="gem">
+    <span class="score">13 &#9733;</span>
+    <span class="name">holonomy_lib</span> <span class="meta">by Synoros-io</span>
+    <div class="desc">Holonomy library &mdash; parallel transport on graphs. Directly related to how information flows through migration topologies.</div>
+  </div>
+  <div class="gem">
+    <span class="name">spectral-pruner</span> <span class="meta">by steph4n-gh &middot; 5 &#9733;</span>
+    <div class="desc">Neural network pruning via spectral methods &mdash; using eigenvalues to decide what to cut.</div>
+  </div>
+  <div class="gem green-border">
+    <span class="name green">spectral-cayley</span> <span class="meta">by SuperInstance</span>
+    <div class="desc">Spectral analysis of Cayley graphs &mdash; the algebraic structure behind group symmetries.</div>
+  </div>
+  <div style="text-align:left; margin:10px 0; padding:8px 14px; font-size:0.55em; color:var(--dim);">
+    Also from SuperInstance: spectral-graph-core, spectral-transport, spectral-emotions, spectral-spreadsheet, conservation-spectral-{mojo,zig,pascal,js,ada,cuda,ptx} &mdash; one person, 15 repos, every language.
+  </div>
+
+  <div class="connection">
+    <strong>Connection to our work:</strong> We proved <span class="lambda2">&lambda;<sub>2</sub></span> (algebraic connectivity) predicts diversity. holonomy_lib formalizes the transport structure we exploit. spectral-pruner uses eigenvalues for selection &mdash; dual to our use for diversity prediction.
+  </div>
+</section>
+
+<!-- Slide 6: Genetic Algorithms Breaking Out -->
+<section>
+  <h2>Genetic Algorithms <span class="accent">Breaking Out</span></h2>
+  <p class="dim" style="font-size:0.55em;">GitHub &middot; last 30 days &middot; under 50 stars</p>
+
+  <div class="gem">
+    <span class="score">Score: 1.2</span>
+    <span class="name">melanoma-detection-system</span> <span class="meta">by joynard</span>
+    <div class="desc">GA-assisted medical image analysis &mdash; co-evolutionary fitness landscapes</div>
+  </div>
+  <div class="gem">
+    <span class="score">Score: 0.4</span>
+    <span class="name">CityMind</span> <span class="meta">by bilalxfaisal</span>
+    <div class="desc">Urban planning optimization with genetic algorithms &mdash; city design as search</div>
+  </div>
+  <div class="gem highlight-border">
+    <span class="score">Score: 0.3</span>
+    <span class="name highlight">GA-Assisted-DDR-RAM-Output-Capacitor-Decoupling-Design</span> <span class="meta">by AspiringPianist</span>
+    <div class="desc">Hardware EDA: using GAs to optimize DDR RAM capacitor placement. Real engineering, not a toy problem.</div>
+  </div>
+  <div class="gem">
+    <span class="score">Score: 0.2</span>
+    <span class="name">PuzzleEvo</span> <span class="meta">by Jimmi1e</span>
+    <div class="desc">Puzzle solving with evolutionary methods</div>
+  </div>
+  <div class="gem green-border">
+    <span class="name green">evoFE</span> <span class="meta">by tanopereira &middot; 5 &#9733;</span>
+    <div class="desc">Evolutionary feature engineering &mdash; using GAs to discover ML features</div>
+  </div>
+
+  <div class="connection">
+    <strong>Connection to our work:</strong> Every one of these would benefit from topology-aware island models. DDR RAM decoupling is a perfect test domain: constrained, real-valued, engineering-critical. Our <span class="lambda2">&lambda;<sub>2</sub></span> theory predicts which migration graph preserves solution diversity.
+  </div>
+</section>
+
+<!-- Slide 7: HN — Optimization Discourse -->
+<section>
+  <h2>HN: The <span class="highlight">Optimization</span> Conversation</h2>
+  <p class="dim" style="font-size:0.55em;">What practitioners are actually discussing</p>
+
+  <div class="story">
+    <span class="score">Score: 35.5</span>
+    <h4>"Can LLMs Beat Classical Hyperparameter Optimization Algorithms?"</h4>
+    <p>120 comments. The old vs new debate &mdash; evolutionary/Bayesian methods vs LLM-guided search.</p>
+  </div>
+  <div class="story" style="border-left-color:var(--gecco-green);">
+    <span class="score">Score: 18.2</span>
+    <h4>"Infinite canvas notes in the non-Euclidean Poincar&eacute; half-plane"</h4>
+    <p>188 comments. Non-Euclidean geometry for knowledge organization &mdash; hyperbolic structure for hierarchies.</p>
+  </div>
+  <div class="story" style="border-left-color:var(--gecco-highlight);">
+    <span class="score">Score: 17.4</span>
+    <h4>"Premature optimization is fun sometimes"</h4>
+    <p>80 comments. The joy of optimization as craft &mdash; resonates with the evolutionary computation ethos.</p>
+  </div>
+  <div class="story">
+    <span class="score">Score: 7.9</span>
+    <h4>"Mach &mdash; a compiled systems language looking for contributors"</h4>
+    <p>A new language designed for optimization-heavy workloads.</p>
+  </div>
+
+  <div class="connection">
+    <strong>Connection to our work:</strong> The LLM vs classical optimization debate (score 35.5) is <em>exactly</em> where our paper lands. We show that structural choices (topology) dominate parameter tuning &mdash; a result that applies whether you use GAs, LLMs, or Bayesian methods to do the search.
+  </div>
+</section>
+
+<!-- Slide 8: Lean4 & Formalization -->
+<section>
+  <h2><span class="green">Lean 4</span> &amp; Math Formalization</h2>
+  <p class="dim" style="font-size:0.55em;">The verified mathematics movement is accelerating</p>
+
+  <div class="gem green-border">
+    <span class="score">Score: 0.20</span>
+    <span class="name green">basic-category-theory-lean4</span> <span class="meta">by whoiam1101</span>
+    <div class="desc">Category theory in Lean 4 &mdash; categories, functors, natural transformations as machine-checked proofs. Fresh (7 days old), actively developed.</div>
+  </div>
+  <div class="gem">
+    <span class="score">Score: 0.20</span>
+    <span class="name">mathlas</span> <span class="meta">by Archerkattri &middot; 3 &#9733;</span>
+    <div class="desc">Lean 4 mathematics library &mdash; building mathematical infrastructure</div>
+  </div>
+  <div class="gem highlight-border">
+    <span class="score">15 &#9733;</span>
+    <span class="name highlight">AI4Math-Putnam2025</span> <span class="meta">by mathTensor</span>
+    <div class="desc">AI approaches to Putnam competition problems &mdash; automated mathematical reasoning</div>
+  </div>
+  <div class="gem">
+    <span class="name">proof-skills</span> <span class="meta">by r-irbe &middot; 2 &#9733;</span>
+    <div class="desc">Proof skill development tools</div>
+  </div>
+
+  <div class="connection">
+    <strong>Future direction:</strong> Our lax monoidal functor construction could be formalized in Lean 4. If basic-category-theory-lean4 matures, it provides the foundation. A verified proof that <span class="lambda2">&lambda;<sub>2</sub></span> controls mixing rate would be a significant contribution.
+  </div>
+</section>
+
+<!-- Slide 9: The SuperInstance Phenomenon -->
+<section>
+  <h2>The <span class="accent">SuperInstance</span> Phenomenon</h2>
+  <p class="dim" style="font-size:0.55em;">One person, 20+ repos, two weeks &mdash; a breakout signal</p>
+
+  <div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin:16px 0;">
+    <span style="background:rgba(50,130,200,0.12); border-radius:4px; padding:4px 10px; font-size:0.55em; color:rgb(50,130,200);">categorical-agents</span>
+    <span style="background:rgba(50,130,200,0.12); border-radius:4px; padding:4px 10px; font-size:0.55em; color:rgb(50,130,200);">categorical-agents-c</span>
+    <span style="background:rgba(220,80,60,0.12); border-radius:4px; padding:4px 10px; font-size:0.55em; color:rgb(220,80,60);">spectral-cayley</span>
+    <span style="background:rgba(220,80,60,0.12); border-radius:4px; padding:4px 10px; font-size:0.55em; color:rgb(220,80,60);">spectral-graph-core</span>
+    <span style="background:rgba(220,80,60,0.12); border-radius:4px; padding:4px 10px; font-size:0.55em; color:rgb(220,80,60);">spectral-transport</span>
+    <span style="background:rgba(220,80,60,0.12); border-radius:4px; padding:4px 10px; font-size:0.55em; color:rgb(220,80,60);">spectral-control</span>
+    <span style="background:rgba(220,80,60,0.12); border-radius:4px; padding:4px 10px; font-size:0.55em; color:rgb(220,80,60);">spectral-emotions</span>
+    <span style="background:rgba(40,160,80,0.12); border-radius:4px; padding:4px 10px; font-size:0.55em; color:rgb(40,160,80);">spectral-graphing-calculator</span>
+    <span style="background:rgba(40,160,80,0.12); border-radius:4px; padding:4px 10px; font-size:0.55em; color:rgb(40,160,80);">spectral-spreadsheet</span>
+    <span style="background:rgba(40,160,80,0.12); border-radius:4px; padding:4px 10px; font-size:0.55em; color:rgb(40,160,80);">graph-neural</span>
+    <span style="background:rgba(50,130,200,0.12); border-radius:4px; padding:4px 10px; font-size:0.55em; color:rgb(50,130,200);">conservation-spectral-mojo</span>
+    <span style="background:rgba(50,130,200,0.12); border-radius:4px; padding:4px 10px; font-size:0.55em; color:rgb(50,130,200);">conservation-spectral-zig</span>
+    <span style="background:rgba(50,130,200,0.12); border-radius:4px; padding:4px 10px; font-size:0.55em; color:rgb(50,130,200);">conservation-spectral-cuda</span>
+  </div>
+
+  <p style="font-size:0.65em;">Someone is independently exploring the <span class="highlight">exact intersection</span><br>of category theory + spectral graph theory + agents.</p>
+  <p class="dim" style="font-size:0.55em;">
+    They appear in both "category theory" and "spectral graph" results.<br>
+    Categorical agents + spectral Cayley graphs + transport = our paper's neighborhood.
+  </p>
+
+  <div class="connection">
+    <strong>Action item:</strong> Reach out to SuperInstance. They're working at the intersection of categorical agents and spectral graph theory &mdash; the exact territory of our GECCO paper. Potential collaborator or at minimum someone who should know about our <span class="lambda2">&lambda;<sub>2</sub></span> results.
+  </div>
+</section>
+
+<!-- Slide 10: Key Takeaways -->
+<section data-background-color="rgb(25,50,95)">
+  <h2 style="color:white;">Key Takeaways</h2>
+  <p class="dim" style="font-size:0.55em;">What the breakout formula found in our research neighborhood</p>
+
+  <div class="takeaway">
+    <span class="num">1</span>
+    <h4 style="color:white;">Category theory formalization is moving to Lean 4</h4>
+    <p>basic-category-theory-lean4 is 7 days old and actively developed. Our lax monoidal functor construction could be verified.</p>
+  </div>
+  <div class="takeaway">
+    <span class="num">2</span>
+    <h4 style="color:white;">SuperInstance is a potential collaborator</h4>
+    <p>20+ repos at the intersection of categorical agents and spectral graph theory in 2 weeks. Working on exactly our territory.</p>
+  </div>
+  <div class="takeaway">
+    <span class="num">3</span>
+    <h4 style="color:white;">GAs are being applied to real engineering (DDR RAM, urban planning)</h4>
+    <p>These domains would directly benefit from topology-aware island models. Our theory gives them <span class="lambda2">&lambda;<sub>2</sub></span> as a free design parameter.</p>
+  </div>
+  <div class="takeaway">
+    <span class="num">4</span>
+    <h4 style="color:white;">The LLM vs classical optimization debate is live on HN</h4>
+    <p>Score 35.5 and climbing. Our structural result (topology &gt; tuning) cuts across both camps.</p>
+  </div>
+  <div class="takeaway">
+    <span class="num">5</span>
+    <h4 style="color:white;">Functor visualization tools are emerging</h4>
+    <p>hom-functor-viz could be adapted to show our GA-as-functor construction interactively at GECCO.</p>
+  </div>
+</section>
+
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+<script>
+Reveal.initialize({
+  hash: true,
+  transition: 'fade',
+  transitionSpeed: 'fast',
+  width: 960,
+  height: 540,
+  margin: 0.1,
+});
+</script>
+</body>
+</html>

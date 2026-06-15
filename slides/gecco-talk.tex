@@ -8,42 +8,43 @@
 \usepackage{graphicx}
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta,positioning,calc}
-\usepackage{listings}
-\usepackage{xcolor}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+% ── Layout: keep right 25% clear for Lyra webcam ──────
+\setbeamersize{text margin left=10mm, text margin right=30mm}
 
 % ── Colors ─────────────────────────────────────────────
-\definecolor{geccoBlue}{RGB}{25,50,95}
+\definecolor{geckoBlue}{RGB}{25,50,95}
 \definecolor{geccoAccent}{RGB}{50,130,200}
 \definecolor{geccoHighlight}{RGB}{220,80,60}
 \definecolor{geccoGreen}{RGB}{40,160,80}
-\definecolor{codeBg}{RGB}{245,245,250}
-\definecolor{haskellPurple}{RGB}{90,50,140}
-\definecolor{rustOrange}{RGB}{180,80,20}
+\definecolor{RoyalBlue}{RGB}{65,105,225}
+\definecolor{ForestGreen}{RGB}{34,139,34}
+\definecolor{RedOrange}{RGB}{255,69,0}
+\definecolor{BrickRed}{RGB}{203,65,84}
 
-\setbeamercolor{frametitle}{bg=geccoBlue,fg=white}
+\setbeamercolor{frametitle}{bg=geckoBlue,fg=white}
 \setbeamercolor{title}{fg=white}
 \setbeamercolor{alerted text}{fg=geccoHighlight}
 \setbeamercolor{progress bar}{fg=geccoAccent}
 
-% ── Code listings ──────────────────────────────────────
-\lstset{
-  basicstyle=\ttfamily\scriptsize,
-  backgroundcolor=\color{codeBg},
-  frame=single,
-  framerule=0pt,
-  breaklines=true,
-  columns=fullflexible,
-  keepspaces=true,
-}
-
 % ── Figure paths ───────────────────────────────────────
 \graphicspath{
-  {../gecco-camera-ready/}
+  {./}
   {../gecco-camera-ready/supplementary/experiments/plots/}
-  {../lyra-first-draft-gecco/}
-  {../experiments/plots/}
-  {../EUMAS/}
-  {../EUMAS/may11/figures/}
+}
+
+% ── Lyra safe zone indicator (comment out for final) ───
+\newif\iflyrazone \lyrazonetrue
+\addtobeamertemplate{background canvas}{}{%
+  \iflyrazone
+    \begin{tikzpicture}[remember picture,overlay]
+      \fill[geccoAccent,opacity=0.04]
+        ([xshift=-40mm]current page.south east) rectangle
+        ([yshift=35mm]current page.south east);
+    \end{tikzpicture}
+  \fi
 }
 
 % ── Meta ───────────────────────────────────────────────
@@ -55,35 +56,43 @@
 
 \begin{document}
 
-% ═══════════════════════════════════════════════════════
-% SECTION 1: Opening Hook (2 min)
-% ═══════════════════════════════════════════════════════
-
-% ── Slide 1: Title ─────────────────────────────────────
+% ══════════════════════════════════════════════════════════
+% Slide 1: Title
+% ══════════════════════════════════════════════════════════
 {
-\setbeamercolor{background canvas}{bg=geccoBlue}
+\setbeamercolor{background canvas}{bg=geckoBlue}
 \begin{frame}[plain]
-  \vfill
-  \begin{center}
-    {\Huge\bfseries\color{white} Composition Determines Diversity}\\[12pt]
-    {\large\color{geccoAccent} Categorical Fingerprints of Genetic Algorithms}\\[24pt]
-    {\normalsize\color{white} Robin Langer \quad $\cdot$ \quad Claudius Turing \quad $\cdot$ \quad Lyra Vega}\\[8pt]
-    {\small\color{gray!60} GECCO 2026 \quad $\cdot$ \quad San Jos\'{e}, Costa Rica}
-  \end{center}
-  \vfill
-  \begin{center}
-    {\small\color{geccoAccent}\itshape ``How you wire your islands matters more than what you evolve''}
-  \end{center}
-  \vfill
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[geckoBlue] (current page.south west) rectangle (current page.north east);
+    % Top half: title (anchored from top)
+    \node[anchor=north west,text width=12cm]
+      at ([xshift=12mm,yshift=-8mm]current page.north west)
+      {{\LARGE\bfseries\color{white} Composition}\\[6pt]
+       {\LARGE\bfseries\color{white} Determines}\\[6pt]
+       {\LARGE\bfseries\color{white} Diversity}\\[8pt]
+       {\normalsize\color{geccoAccent} Categorical Fingerprints of Genetic Algorithms}};
+    % Bottom-left quadrant: authors (anchored from bottom)
+    \node[anchor=south west,text width=6.5cm]
+      at ([xshift=12mm,yshift=8mm]current page.south west)
+      {{\small\color{white} Robin Langer}\\
+       {\small\color{white} Claudius Turing}\\
+       {\small\color{white} Lyra Vega}\\[6pt]
+       {\footnotesize\color{gray!60} GECCO 2026 $\cdot$ San Jos\'{e}, Costa Rica}};
+    % Bottom-right quadrant: empty (Lyra's webcam)
+  \end{tikzpicture}
 \end{frame}
 }
 
-% ── Slide 2: The Surprising Claim ★ AHA MOMENT ────────
-\begin{frame}{The Surprising Claim}
+% ══════════════════════════════════════════════════════════
+% Slide 2: The Claim — show the result first
+% ══════════════════════════════════════════════════════════
+\begin{frame}{The Claim}
   \begin{center}
-    \includegraphics[width=0.85\textwidth]{multi_domain_topology_ordering.pdf}
+    \resizebox{\textwidth}{!}{%
+      \includegraphics{multi_domain_topology_ordering.pdf}%
+    }
   \end{center}
-  \vspace{-6pt}
+  \vspace{-4pt}
   \begin{columns}[T]
     \column{0.33\textwidth}
     \centering\small
@@ -99,294 +108,49 @@
     Topology $\gg$ domain
   \end{columns}
   \note{Show this result FIRST, then spend the talk explaining why.
-    Migration topology explains 23.9x more variance in diversity than domain choice.
-    The ordering none > ring > star > random > FC holds with Kendall's W = 1.0
-    across 6 completely unrelated domains. p = 0.00008.}
+    The ordering none > ring > star > random > FC holds with W = 1.0
+    across 6 completely unrelated domains.}
 \end{frame}
 
-% ── Slide 3: Why Should You Care? ─────────────────────
-\begin{frame}{Why Should You Care?}
-  \begin{columns}[T]
-    \column{0.45\textwidth}
-    {\color{gray}\small What practitioners tune}\\[6pt]
-    \begin{itemize}
-      \item Crossover type
-      \item Mutation rate
-      \item Population size
-      \item Selection pressure
-    \end{itemize}
-    \column{0.1\textwidth}
-    \centering\vspace{30pt}
-    {\Huge\color{geccoHighlight} $\ll$}
-    \column{0.45\textwidth}
-    {\color{geccoAccent}\small\bfseries What actually determines diversity}\\[6pt]
-    \begin{itemize}
-      \item \textbf{Composition structure}
-      \item \textbf{Migration topology}
-      \item[$\to$] Choose topology FIRST
-    \end{itemize}
-  \end{columns}
-  \vfill
-  {\small Three practical recommendations at the end of this talk.}
-  \note{Practitioners spend weeks tuning operators; topology is chosen once and forgotten.
-    Our result: choose topology FIRST --- it dominates everything else.}
+% ══════════════════════════════════════════════════════════
+% Slide 3: Why This Matters
+% ══════════════════════════════════════════════════════════
+\begin{frame}{Why This Matters}
+  \vspace{10pt}
+  {\large Migration topology explains}\\[10pt]
+  {\LARGE\bfseries\color{geccoHighlight} 23.9$\times$ more variance}\\[10pt]
+  {\large in diversity than domain choice.}
+  \vspace{20pt}
+
+  {\color{gray}
+    The thing you set once and forget\\
+    matters more than everything you tune.}
+  \note{Topology explains 23.9x more variance than domain.
+    The thing you set once and forget matters most.}
 \end{frame}
 
-% ═══════════════════════════════════════════════════════
-% SECTION 2: The Categorical Framework (4 min)
-% ═══════════════════════════════════════════════════════
-\section{The Categorical Framework}
-
-% ── Slide 4: Hidden Composition ───────────────────────
-\begin{frame}[fragile]{The Problem: Hidden Composition}
-  Every GA composes operators:
+% ══════════════════════════════════════════════════════════
+% Slide 4: Every GA Is a Pipeline
+% ══════════════════════════════════════════════════════════
+\begin{frame}[fragile]{Every GA Is a Pipeline}
+  Every GA composes the same operators:
   \[
-    \texttt{select} \;\to\; \texttt{crossover} \;\to\; \texttt{mutate} \;\to\; \texttt{replace}
+    \texttt{select} \;\to\; \texttt{crossover} \;\to\; \texttt{mutate} \;\to\; \texttt{evaluate}
   \]
 
-  \vspace{6pt}
-  In imperative code, this pipeline is \alert{invisible}:
-  \vspace{4pt}
+  \vspace{10pt}
+ \alert{(Kleisli composition)}
 
-  \lstset{basicstyle=\ttfamily\fontsize{7}{8.5}\selectfont,
-    keywordstyle=\color{rustOrange}\bfseries,
-    commentstyle=\color{gray},
-    morekeywords={for,in,let}}
-  \begin{lstlisting}
-for gen in 0..max_gens {
-    let parent_a = tournament_select(&pop, &fitness, rng);
-    let parent_b = tournament_select(&pop, &fitness, rng);
-    let (child_a, child_b) = crossover(parent_a, parent_b, cx_rate, rng);
-    let child_a = mutate(child_a, mut_rate, rng);
-    let child_b = mutate(child_b, mut_rate, rng);
-    // ... 60+ more lines of manual sequencing
-}
-  \end{lstlisting}
-
-  \vspace{4pt}
-  {\small Cannot formally ask: \emph{``does this composition preserve a property?''}}
-  \note{Every GA composes operators but in imperative code this composition is
-    invisible --- buried in loops. Cannot formally reason about composition.}
 \end{frame}
 
-% ── Slide 5: Making Composition Explicit ★ AHA MOMENT ─
-\begin{frame}[fragile]{Making Composition Explicit}
-  \begin{columns}[T]
-    \column{0.55\textwidth}
-    {\color{haskellPurple}\bfseries Kleisli composition (6 lines)}
-    \lstset{basicstyle=\ttfamily\fontsize{8}{10}\selectfont,
-      keywordstyle=\color{haskellPurple}\bfseries,
-      morekeywords={evolve,tournamentSelect,crossover,mutate,evaluate}}
-    \begin{lstlisting}
-evolve :: Pop a -> Evo (Pop a)
-evolve =
-    tournamentSelect
-  >>> crossover
-  >>> mutate
-  >>> evaluate
-    \end{lstlisting}
-
-    \vspace{8pt}
-    {\small Operators typed as\\
-    \quad $f : \mathsf{Pop}\,a \to M(\mathsf{Pop}\,a)$\\[4pt]
-    Same type in, same type out.\\
-    \alert{Composable by construction.}}
-
-    \column{0.45\textwidth}
-    {\color{rustOrange}\bfseries Imperative (75 lines)}\\[4pt]
-    {\footnotesize Manual sequencing, index arithmetic, explicit effect threading, interleaved concerns\ldots}
-
-    \vspace{12pt}
-    \begin{center}
-    \begin{tikzpicture}
-      \node[draw=geccoHighlight,thick,rounded corners,inner sep=8pt,
-            text width=4cm,align=center,font=\small\bfseries\color{geccoHighlight}]
-        {Same algorithm.\\But now the structure\\is \emph{visible}.};
-    \end{tikzpicture}
-    \end{center}
-  \end{columns}
-  \note{AHA: Six lines. Same algorithm. But now the structure is VISIBLE.
-    Kleisli arrows let us compose with effects handled automatically.}
-\end{frame}
-
-% ── Slide 6: Three Composition Levels ─────────────────
-\begin{frame}{Three Composition Levels}
+% ══════════════════════════════════════════════════════════
+% Slide 5: Five Topologies
+% ══════════════════════════════════════════════════════════
+\begin{frame}{Five Topologies}
   \begin{center}
+  \resizebox{\textwidth}{!}{%
   \begin{tikzpicture}[
-    level/.style={draw=geccoBlue,thick,rounded corners,minimum width=10cm,
-                  minimum height=1.4cm,align=center,font=\small},
-    arr/.style={-{Stealth[length=5pt]},thick,geccoAccent}
-  ]
-    \node[level,fill=geccoBlue!10] (L1) at (0,0)
-      {\textbf{Level 1: Operators $\to$ Pipelines}\\[-2pt]
-       \scriptsize select $\circ$ crossover $\circ$ mutate $\circ$ evaluate = one generation};
-    \node[level,fill=geccoBlue!20] (L2) at (0,2)
-      {\textbf{Level 2: Pipelines $\to$ Strategies}\\[-2pt]
-       \scriptsize generational, island, hourglass, adaptive};
-    \node[level,fill=geccoBlue!30] (L3) at (0,4)
-      {\textbf{Level 3: Strategies $\to$ Multi-population systems}\\[-2pt]
-       \scriptsize island models, hierarchical decomposition};
-
-    \draw[arr] (L1) -- (L2);
-    \draw[arr] (L2) -- (L3);
-
-    \node[right=0.3cm of L3,font=\scriptsize\itshape\color{geccoHighlight},
-          text width=2.5cm,align=left] {Recursive:\\composite has\\same type as parts};
-  \end{tikzpicture}
-  \end{center}
-  \note{Three levels of composition. The key insight: at every level,
-    the composite has the same type as its parts --- recursive composability.}
-\end{frame}
-
-% ── Slide 7: Domain Invariance ────────────────────────
-\begin{frame}{Domain Invariance}
-  \begin{center}
-  {\small Pipeline shape is \alert{identical} across all domains.}
-  \end{center}
-
-  \vspace{6pt}
-  \begin{center}
-  \begin{tabular}{@{}lcc@{}}
-    \toprule
-    \textbf{Component} & \textbf{Changes?} & \textbf{Why} \\
-    \midrule
-    Genome type $a$ & \checkmark & Problem-specific \\
-    Fitness function & \checkmark & Problem-specific \\
-    \midrule
-    Pipeline shape & $\times$ & Categorical structure \\
-    Composition laws & $\times$ & Kleisli category \\
-    Strategy patterns & $\times$ & Functor composition \\
-    Migration structure & $\times$ & Graph topology \\
-    \bottomrule
-  \end{tabular}
-  \end{center}
-
-  \vfill
-  {\small\itshape Category theory predicts this: structure lives in \alert{arrows}, not objects.}
-  \note{Only genome type and fitness function change. Everything about the
-    composition structure is invariant. Category theory predicts this.}
-\end{frame}
-
-% ═══════════════════════════════════════════════════════
-% SECTION 3: The Experiment (3 min)
-% ═══════════════════════════════════════════════════════
-\section{Experimental Setup}
-
-% ── Slide 8: Six Domains ──────────────────────────────
-\begin{frame}{Six Domains}
-  \begin{columns}[T]
-    \column{0.5\textwidth}
-    \begin{enumerate}
-      \item \textbf{OneMax}\\[-2pt]
-            {\scriptsize Trivial unimodal}
-      \item \textbf{Maze Generation}\\[-2pt]
-            {\scriptsize Binary, multi-objective}
-      \item \textbf{Graph Coloring}\\[-2pt]
-            {\scriptsize Constraint satisfaction}
-    \end{enumerate}
-    \column{0.5\textwidth}
-    \begin{enumerate}\setcounter{enumi}{3}
-      \item \textbf{Knapsack}\\[-2pt]
-            {\scriptsize Epistatic interactions}
-      \item \textbf{No Thanks!}\\[-2pt]
-            {\scriptsize Co-evolutionary, \alert{no fixed landscape}}
-      \item \textbf{Checkers}\\[-2pt]
-            {\scriptsize Intransitive fitness}
-    \end{enumerate}
-  \end{columns}
-
-  \vspace{12pt}
-  \begin{center}
-    {\small Chosen to span: landscape structure $\times$ representation type $\times$ constraint type}
-  \end{center}
-  \note{Six completely unrelated domains spanning: trivial to NP-hard,
-    fixed to co-evolutionary landscapes, binary to real-valued.}
-\end{frame}
-
-% ── Slide 9: Experimental Setup ───────────────────────
-\begin{frame}{Experimental Setup}
-  \begin{columns}[T]
-    \column{0.5\textwidth}
-    \begin{itemize}
-      \item 5 islands $\times$ 16 individuals
-      \item 100 generations
-      \item 5 topologies
-      \item 30 seeds per condition
-      \item \textbf{900 runs total}
-    \end{itemize}
-
-    \vspace{8pt}
-    {\small Diversity = normalized pairwise\\Hamming/Euclidean distance}
-
-    \column{0.5\textwidth}
-    \begin{center}
-    \begin{tikzpicture}[scale=0.55,
-      node/.style={circle,draw=geccoBlue,fill=geccoBlue!20,
-                   minimum size=8pt,inner sep=0pt}]
-      % None
-      \node[font=\scriptsize\bfseries] at (0,2.5) {None};
-      \foreach \i in {1,...,5} {
-        \node[node] (n\i) at ({72*\i-72}:0.8) {};
-      }
-
-      % Ring
-      \begin{scope}[xshift=3.5cm]
-        \node[font=\scriptsize\bfseries] at (0,2.5) {Ring};
-        \foreach \i in {1,...,5} {
-          \node[node] (r\i) at ({72*\i-72}:0.8) {};
-        }
-        \foreach \i/\j in {1/2,2/3,3/4,4/5,5/1} {
-          \draw[geccoAccent,thick] (r\i) -- (r\j);
-        }
-      \end{scope}
-
-      % Star
-      \begin{scope}[xshift=7cm]
-        \node[font=\scriptsize\bfseries] at (0,2.5) {Star};
-        \node[node] (sc) at (0,0) {};
-        \foreach \i in {1,...,4} {
-          \node[node] (s\i) at ({90*\i-90}:0.8) {};
-          \draw[geccoAccent,thick] (sc) -- (s\i);
-        }
-      \end{scope}
-
-      % Random
-      \begin{scope}[xshift=10.5cm]
-        \node[font=\scriptsize\bfseries] at (0,2.5) {Random};
-        \foreach \i in {1,...,5} {
-          \node[node] (d\i) at ({72*\i-72}:0.8) {};
-        }
-        \draw[geccoAccent,thick] (d1) -- (d3);
-        \draw[geccoAccent,thick] (d2) -- (d5);
-        \draw[geccoAccent,thick] (d1) -- (d4);
-        \draw[geccoAccent,thick] (d3) -- (d5);
-        \draw[geccoAccent,thick] (d2) -- (d4);
-      \end{scope}
-
-      % FC
-      \begin{scope}[xshift=14cm]
-        \node[font=\scriptsize\bfseries] at (0,2.5) {FC};
-        \foreach \i in {1,...,5} {
-          \node[node] (f\i) at ({72*\i-72}:0.8) {};
-        }
-        \foreach \i in {1,...,5} {
-          \foreach \j in {\i,...,5} {
-            \draw[geccoAccent,thick] (f\i) -- (f\j);
-          }
-        }
-      \end{scope}
-    \end{tikzpicture}
-    \end{center}
-  \end{columns}
-  \note{5 islands x 16 individuals, 100 generations, 30 seeds per (topology, domain)
-    = 900 runs total. Five topologies from disconnected to fully connected.}
-\end{frame}
-
-% ── Slide 10: Topologies + Lambda_2 ──────────────────
-\begin{frame}{Five Topologies: Algebraic Connectivity}
-  \begin{center}
-  \begin{tikzpicture}[scale=0.7,
-    node/.style={circle,draw=geccoBlue,fill=geccoBlue!20,
+    node/.style={circle,draw=geckoBlue,fill=geckoBlue!20,
                  minimum size=10pt,inner sep=0pt},
     lbl/.style={font=\small\bfseries,above=12pt},
     lam/.style={font=\scriptsize\color{geccoHighlight},below=8pt}]
@@ -457,328 +221,172 @@ evolve =
     \draw[-{Stealth[length=6pt]},thick,geccoHighlight]
       (-1.5,-2.8) -- (17.5,-2.8)
       node[midway,below,font=\small] {More connected $\to$ faster mixing $\to$ lower diversity};
-  \end{tikzpicture}
+  \end{tikzpicture}%
+  }%
   \end{center}
-  \note{The five topologies ordered by algebraic connectivity lambda_2.
-    Intuition: more connected = faster mixing = greater diversity erosion.}
+  \note{Five topologies ordered by algebraic connectivity lambda_2.
+    More connected = faster mixing = greater diversity erosion.}
 \end{frame}
 
-% ═══════════════════════════════════════════════════════
-% SECTION 4: Main Results (5 min)
-% ═══════════════════════════════════════════════════════
-\section{Results}
-
-% ── Slide 11: Universal Ordering ★ AHA MOMENT ────────
-\begin{frame}{The Universal Ordering}
-  \begin{center}
-    \includegraphics[width=0.8\textwidth]{multi_domain_topology_ordering.pdf}
-  \end{center}
-
-  \vspace{-4pt}
-  \begin{center}
-  \begin{tabular}{@{}cccc@{}}
-    $W = 1.0$ & $p = 0.00008$ & $F_{\text{topo}} = 47.8$ & $F_{\text{domain}} = 0.13$ \\
-    \scriptsize perfect concordance & \scriptsize highly significant &
-    \scriptsize topology dominates & \scriptsize \alert{domain is noise}
-  \end{tabular}
-  \end{center}
-
-  \note{THE central result. Pause here. Let it land.
-    none > ring > star > random > FC in EVERY domain.
-    Two-way ANOVA: topology F=47.8, domain F=0.13.
-    Even No Thanks! (no fixed landscape) follows the ordering.}
-\end{frame}
-
-% ── Slide 12: Spectral Explanation ────────────────────
-\begin{frame}{The Spectral Explanation}
-  \begin{columns}[T]
-    \column{0.55\textwidth}
-    \begin{itemize}
-      \item Ordering follows $\lambda_2$\\(algebraic connectivity)
-      \item Smaller $\lambda_2$ $=$ slower mixing\\$=$ \alert{higher sustained diversity}
-      \item None $\to$ ring: \textbf{35\% diversity drop}\\
-            {\scriptsize (symmetry breaking dominates)}
-      \item Subsequent steps: $\leq$ 9\% each
-    \end{itemize}
-
-    \vspace{8pt}
-    \begin{center}
-    {\small\itshape The first edge matters most.}
-    \end{center}
-
-    \column{0.45\textwidth}
-    % Placeholder for lambda_2 vs diversity plot
-    \begin{center}
-      \includegraphics[width=\textwidth]{multi_domain_coupling_onset.pdf}
-    \end{center}
-  \end{columns}
-  \note{Ordering follows lambda_2. The none-to-ring transition causes a 35\%
-    diversity drop --- symmetry breaking dominates. After that, at most 9\% per step.}
-\end{frame}
-
-% ── Slide 13: Ring/Star Inversion ★ AHA MOMENT ───────
-\begin{frame}{Falsifiable Prediction: Ring/Star Inversion}
+% ══════════════════════════════════════════════════════════
+% Slide 6: The Experiment
+% ══════════════════════════════════════════════════════════
+\begin{frame}{The Experiment}
+  \small
   \begin{columns}[T]
     \column{0.5\textwidth}
-    \begin{center}
-      {\bfseries At $n = 5$}\\[4pt]
-      \begin{tikzpicture}[scale=0.5,
-        node/.style={circle,draw=geccoBlue,fill=geccoBlue!20,
-                     minimum size=8pt,inner sep=0pt}]
-        \foreach \i in {1,...,5} {
-          \node[node] (r\i) at ({72*\i-72}:1) {};
-        }
-        \foreach \i/\j in {1/2,2/3,3/4,4/5,5/1} {
-          \draw[geccoAccent,thick] (r\i) -- (r\j);
-        }
-      \end{tikzpicture}\\[4pt]
-      $\lambda_2(\text{ring}) = 1.38 > 1.0 = \lambda_2(\text{star})$\\[4pt]
-      {\small Hard to distinguish}\\
-      $p = 0.14$ {\scriptsize (as predicted)}
-    \end{center}
-
-    \column{0.5\textwidth}
-    \begin{center}
-      {\bfseries At $n = 7$}\\[4pt]
-      \begin{tikzpicture}[scale=0.5,
-        node/.style={circle,draw=geccoBlue,fill=geccoBlue!20,
-                     minimum size=8pt,inner sep=0pt}]
-        \foreach \i in {1,...,7} {
-          \node[node] (r\i) at ({360/7*\i}:1) {};
-        }
-        \foreach \i in {1,...,6} {
-          \pgfmathtruncatemacro{\j}{\i+1}
-          \draw[geccoAccent,thick] (r\i) -- (r\j);
-        }
-        \draw[geccoAccent,thick] (r7) -- (r1);
-      \end{tikzpicture}\\[4pt]
-      $\lambda_2(\text{ring}) = 0.75 \alert{<} 1.0 = \lambda_2(\text{star})$\\[4pt]
-      {\small\bfseries Inequality reverses!}\\
-      Ring: $0.387$ vs Star: $0.336$\\
-      $p = 6.6 \times 10^{-5}$ {\scriptsize\color{geccoGreen} \checkmark{} confirmed}
-    \end{center}
-  \end{columns}
-
-  \vfill
-  \begin{center}
-    {\small\alert{Theory predicts, experiment confirms.} Not post-hoc --- \textbf{novel prediction.}}
-  \end{center}
-  \note{AHA MOMENT. At n=5, ring and star have similar lambda_2 --- hard to distinguish (p=0.14).
-    At n=7, the inequality reverses --- ring should clearly beat star. Confirmed: p = 6.6e-5.
-    This is science: the theory makes novel predictions.}
-\end{frame}
-
-% ── Slide 14: Scope Condition ─────────────────────────
-\begin{frame}{Scope Condition: Sorting Networks}
-  \begin{center}
-    \begin{tikzpicture}
-      \node[draw=geccoHighlight,thick,rounded corners,inner sep=12pt,
-            text width=10cm,align=center]
-        {A 7th domain (sorting networks) \alert{violates} the ordering.\\[6pt]
-         This is \textbf{good} --- it means the theory is \textbf{falsifiable}.\\[6pt]
-         {\small Scope: holds where the fitness landscape admits\\sufficient selective gradient.}};
-    \end{tikzpicture}
-  \end{center}
-  \note{Sorting networks violate the ordering. This shows the theory is falsifiable.
-    Scope: holds where fitness landscape admits sufficient selective gradient.
-    Don't dwell --- shows scientific honesty.}
-\end{frame}
-
-% ═══════════════════════════════════════════════════════
-% SECTION 5: Diversity Fingerprints (3 min)
-% ═══════════════════════════════════════════════════════
-\section{Diversity Fingerprints}
-
-% ── Slide 15: Four Strategy Compositions ──────────────
-\begin{frame}{Four Strategy Compositions}
-  {\small Same operators, different composition patterns:}
-
-  \vspace{8pt}
-  \begin{columns}[T]
-    \column{0.25\textwidth}
-    \centering
-    {\bfseries Generational}\\[4pt]
-    {\scriptsize iterate($f$)}\\[4pt]
-    \begin{tikzpicture}[scale=0.4]
-      \draw[-{Stealth},thick,geccoBlue] (0,0) -- (0,-2);
-      \node[font=\tiny] at (0.6,-1) {repeat};
-    \end{tikzpicture}
-
-    \column{0.25\textwidth}
-    \centering
-    {\bfseries Hourglass}\\[4pt]
-    {\scriptsize 3 phases}\\[4pt]
-    \begin{tikzpicture}[scale=0.4]
-      \draw[-{Stealth},thick,geccoBlue] (0,0) -- (0,-0.7);
-      \draw[-{Stealth},thick,geccoHighlight] (0,-0.7) -- (0,-1.4);
-      \draw[-{Stealth},thick,geccoGreen] (0,-1.4) -- (0,-2);
-    \end{tikzpicture}
-
-    \column{0.25\textwidth}
-    \centering
-    {\bfseries Island}\\[4pt]
-    {\scriptsize parallel + migrate}\\[4pt]
-    \begin{tikzpicture}[scale=0.4]
-      \draw[-{Stealth},thick,geccoBlue] (-0.5,0) -- (-0.5,-2);
-      \draw[-{Stealth},thick,geccoBlue] (0.5,0) -- (0.5,-2);
-      \draw[{Stealth}-{Stealth},thick,geccoAccent] (-0.3,-1) -- (0.3,-1);
-    \end{tikzpicture}
-
-    \column{0.25\textwidth}
-    \centering
-    {\bfseries Adaptive}\\[4pt]
-    {\scriptsize conditional switch}\\[4pt]
-    \begin{tikzpicture}[scale=0.4]
-      \draw[-{Stealth},thick,geccoBlue] (0,0) -- (0,-0.8);
-      \draw[-{Stealth},thick,geccoHighlight] (-0.5,-0.8) -- (-0.5,-2);
-      \draw[-{Stealth},thick,geccoGreen] (0.5,-0.8) -- (0.5,-2);
-      \node[font=\tiny] at (0,-0.6) {?};
-    \end{tikzpicture}
-  \end{columns}
-  \note{Same operators composed in four different patterns.
-    Generational (iterate), Hourglass (3 phases), Island (parallel + migration),
-    Adaptive (conditional switch on plateau detection).}
-\end{frame}
-
-% ── Slide 16: Fingerprint Chart ★ AHA MOMENT ─────────
-\begin{frame}{Diversity Fingerprints}
-  \begin{center}
-    \includegraphics[width=0.85\textwidth]{gecco_two_panel.pdf}
-  \end{center}
-  \vspace{-4pt}
-  \begin{center}
-    {\small Same operators. \alert{18$\times$ spread} in final diversity.\\
-    \textbf{Composition is everything.}}
-  \end{center}
-  \note{AHA MOMENT. Same operators, 18x difference in final diversity.
-    Monotonic decline (generational), spike-crash-rebound (hourglass),
-    stable maintenance (island), spike-then-collapse (adaptive).
-    Composition determines the trajectory shape.}
-\end{frame}
-
-% ── Slide 17: Fingerprints Stable Across Domains ─────
-\begin{frame}{Fingerprints Are Stable Across Domains}
-  \begin{columns}[T]
-    \column{0.6\textwidth}
     \begin{itemize}
-      \item Patterns replicate across\\maze, graph coloring, knapsack
-      \item Shape determined by\\
-            \alert{composition}, not landscape
-      \item You can predict diversity trajectory\\
-            from composition structure alone
+      \item 6 domains: OneMax, maze,\\
+            graph coloring, knapsack,\\
+            No Thanks!, checkers
+      \item 5 topologies $\times$ 30 seeds
+      \item 5 islands $\times$ 16 individuals
+      \item 100 generations
+      \item \textbf{900 runs total}
     \end{itemize}
 
-    \column{0.4\textwidth}
-    \begin{center}
-      \includegraphics[width=\textwidth]{multi_domain_variance_decomposition.pdf}
-    \end{center}
+    \column{0.5\textwidth}
+    Chosen to span:
+    \begin{itemize}
+      \item Trivial $\to$ NP-hard
+      \item Fixed $\to$ co-evolutionary
+      \item Binary $\to$ real-valued
+    \end{itemize}
   \end{columns}
-  \note{Fingerprint patterns replicate across all domains. The shape is determined
-    by composition, not landscape. Implication: predict diversity trajectory
-    from composition structure alone.}
-\end{frame}
-
-% ═══════════════════════════════════════════════════════
-% SECTION 6: Practical Implications + Conclusion (2 min)
-% ═══════════════════════════════════════════════════════
-\section{Implications}
-
-% ── Slide 18: Three Recommendations ──────────────────
-\begin{frame}{Three Recommendations for Practitioners}
-  \begin{enumerate}
-    \item \textbf{Prefer ring/mesh over star}\\
-          {\small $\beta_1 \geq 1$ avoids the composition-tax singularity}
-
-    \vspace{8pt}
-    \item \textbf{Monitor $\lambda_2$, not diversity directly}\\
-          {\small Early warning signal, cheap to compute from topology alone}
-
-    \vspace{8pt}
-    \item \textbf{Add cycle-closing edges}, don't increase migration rate\\
-          {\small Changes topology structure, not just coupling strength}
-  \end{enumerate}
 
   \vspace{10pt}
+  {\small Diversity = normalized pairwise\\Hamming distance}
+  \note{Six completely unrelated domains, 5 topologies, 30 seeds each = 900 runs.
+    Domains chosen to span landscape structure, representation, constraint type.}
+\end{frame}
+% ══════════════════════════════════════════════════════════
+% Slide 7: Diversity Fingerprints
+% ══════════════════════════════════════════════════════════
+\begin{frame}{Diversity Fingerprints}
   \begin{center}
-  \begin{tikzpicture}[scale=0.5,
-    node/.style={circle,draw=geccoBlue,fill=geccoBlue!20,
-                 minimum size=10pt,inner sep=0pt}]
-    % Star
-    \node[node] (sc) at (0,0) {};
-    \foreach \i/\a in {1/45,2/135,3/225,4/315} {
-      \node[node] (s\i) at (\a:1.2) {};
-      \draw[gray,thick] (sc) -- (s\i);
-    }
-    \node[below=8pt,font=\small] at (0,-1.4) {Star};
-
-    % Arrow
-    \draw[-{Stealth[length=6pt]},very thick,geccoHighlight] (2.2,0) -- (3.8,0)
-      node[midway,above,font=\scriptsize] {+1 edge};
-
-    % Ring
-    \begin{scope}[xshift=6cm]
-      \foreach \i in {1,...,5} {
-        \node[node] (r\i) at ({72*\i-72}:1.2) {};
-      }
-      \foreach \i/\j in {1/2,2/3,3/4,4/5,5/1} {
-        \draw[geccoAccent,thick] (r\i) -- (r\j);
-      }
-      \node[below=8pt,font=\small] at (0,-1.4) {Ring};
-    \end{scope}
-  \end{tikzpicture}
+  \resizebox{\textwidth}{!}{%
+  \begin{tikzpicture}
+  % --- (a) Maze ---
+  \begin{axis}[
+    name=maze,
+    width=4.5cm, height=3.5cm,
+    xlabel={\scriptsize Generation}, ylabel={\scriptsize Diversity},
+    title={\small\textbf{(a) Maze}},
+    xmin=0, xmax=52, ymin=0, ymax=0.55,
+    grid=major, grid style={gray!20},
+    tick label style={font=\scriptsize}, label style={font=\scriptsize},
+  ]
+  \addplot[solid, thick, RoyalBlue, mark=square*, mark size=1pt]
+    coordinates {(0,0.5007) (5,0.3523) (10,0.2658) (15,0.2056) (20,0.1736) (25,0.1651) (30,0.1531) (50,0.1359)};
+  \addplot[dashed, thick, ForestGreen, mark=triangle*, mark size=1.5pt]
+    coordinates {(0,0.5007) (5,0.4369) (10,0.4064) (15,0.4037) (20,0.1696) (25,0.0644) (30,0.2419) (50,0.3693)};
+  \addplot[dotted, thick, RedOrange, mark=o, mark size=1pt]
+    coordinates {(0,0.5007) (5,0.4118) (10,0.3549) (15,0.2971) (20,0.2864) (25,0.2735) (30,0.2588) (50,0.1508)};
+  \addplot[dashdotted, thick, BrickRed, mark=diamond*, mark size=1.5pt]
+    coordinates {(0,0.5007) (5,0.4369) (10,0.2808) (15,0.1005) (20,0.0507) (25,0.0377) (30,0.0234) (50,0.0202)};
+  \end{axis}
+  % --- (b) Graph Coloring ---
+  \begin{axis}[
+    at={(maze.east)}, anchor=west, xshift=0.6cm,
+    name=gc,
+    width=4.5cm, height=3.5cm,
+    xlabel={\scriptsize Generation},
+    title={\small\textbf{(b) Graph Coloring}},
+    xmin=0, xmax=52, ymin=0, ymax=0.55,
+    grid=major, grid style={gray!20},
+    tick label style={font=\scriptsize}, label style={font=\scriptsize},
+    yticklabels={},
+  ]
+  \addplot[solid, thick, RoyalBlue, mark=square*, mark size=1pt]
+    coordinates {(0,0.5009) (5,0.4186) (10,0.3092) (15,0.2490) (20,0.2155) (25,0.1617) (30,0.1551) (50,0.1215)};
+  \addplot[dashed, thick, ForestGreen, mark=triangle*, mark size=1.5pt]
+    coordinates {(0,0.5009) (5,0.4603) (10,0.4296) (15,0.4218) (20,0.1908) (25,0.0748) (30,0.2675) (50,0.3977)};
+  \addplot[dotted, thick, RedOrange, mark=o, mark size=1pt]
+    coordinates {(0,0.5009) (5,0.4368) (10,0.3384) (15,0.2937) (20,0.2498) (25,0.2078) (30,0.1558) (50,0.1373)};
+  \addplot[dashdotted, thick, BrickRed, mark=diamond*, mark size=1.5pt]
+    coordinates {(0,0.5009) (5,0.4603) (10,0.2833) (15,0.0839) (20,0.0547) (25,0.0513) (30,0.0563) (50,0.0630)};
+  \end{axis}
+  % --- (c) Knapsack ---
+  \begin{axis}[
+    at={(gc.east)}, anchor=west, xshift=0.6cm,
+    name=ks,
+    width=4.5cm, height=3.5cm,
+    xlabel={\scriptsize Generation},
+    title={\small\textbf{(c) Knapsack}},
+    xmin=0, xmax=52, ymin=0, ymax=0.55,
+    grid=major, grid style={gray!20},
+    tick label style={font=\scriptsize}, label style={font=\scriptsize},
+    yticklabels={},
+  ]
+  \addplot[solid, thick, RoyalBlue, mark=square*, mark size=1pt]
+    coordinates {(0,0.5003) (5,0.3562) (10,0.2474) (15,0.2062) (20,0.1834) (25,0.1625) (30,0.1477) (50,0.1329)};
+  \addplot[dashed, thick, ForestGreen, mark=triangle*, mark size=1.5pt]
+    coordinates {(0,0.5003) (5,0.4310) (10,0.3975) (15,0.3749) (20,0.1674) (25,0.0669) (30,0.2404) (50,0.3487)};
+  \addplot[dotted, thick, RedOrange, mark=o, mark size=1pt]
+    coordinates {(0,0.5003) (5,0.3929) (10,0.2655) (15,0.2180) (20,0.1933) (25,0.1705) (30,0.1546) (50,0.1220)};
+  \addplot[dashdotted, thick, BrickRed, mark=diamond*, mark size=1.5pt]
+    coordinates {(0,0.5003) (5,0.4310) (10,0.3017) (15,0.2021) (20,0.0917) (25,0.0492) (30,0.0307) (50,0.0230)};
+  \end{axis}
+  \end{tikzpicture}%
+  }%
   \end{center}
+  \vspace{-4pt}
+  {\scriptsize
+    \tikz\draw[solid, thick, RoyalBlue] (0,0)--(0.4,0); Flat \;
+    \tikz\draw[dashed, thick, ForestGreen] (0,0)--(0.4,0); Hourglass \;
+    \tikz\draw[dotted, thick, RedOrange] (0,0)--(0.4,0); Island \;
+    \tikz\draw[dashdotted, thick, BrickRed] (0,0)--(0.4,0); Adaptive
+    \hfill Same operators. \alert{18$\times$ spread.}
+  }
+  \note{AHA MOMENT. Same operators, 18x difference in final diversity.
+    Patterns replicate across all three domains.}
+\end{frame}
+
+% ══════════════════════════════════════════════════════════
+% Slide 8: Three Things To Do Monday
+% ══════════════════════════════════════════════════════════
+\begin{frame}{Three Things To Do Monday}
+  \begin{enumerate}
+    \item \textbf{Choose topology FIRST}\\
+          {\small Before tuning operators --- it dominates everything else}
+
+    \vspace{10pt}
+    \item \textbf{Monitor $\lambda_2$, not diversity directly}\\
+          {\small Cheap early-warning signal, computed from topology alone}
+
+    \vspace{10pt}
+    \item \textbf{Add cycle-closing edges}, not migration rate\\
+          {\small Changes structure, not just coupling strength}
+  \end{enumerate}
   \note{Three practical recommendations.
-    1. Prefer ring/mesh over star.
-    2. Monitor lambda_2, not diversity directly.
+    1. Choose topology FIRST.
+    2. Monitor lambda_2.
     3. Add cycle-closing edges rather than increasing migration rate.}
 \end{frame}
 
-% ── Slide 19: Summary + Future Work ──────────────────
-\begin{frame}{Summary}
-  \begin{columns}[T]
-    \column{0.55\textwidth}
-    \begin{itemize}
-      \item \textbf{Composition determines diversity}\\
-            {\small empirically, across 6 domains}
-      \item \textbf{Universal topology ordering}\\
-            {\small $W = 1.0$, explained by $\lambda_2$}
-      \item \textbf{Diversity fingerprints} are properties\\
-            of composition patterns
-      \item \textbf{Falsifiable} predictions confirmed
-    \end{itemize}
-
-    \column{0.45\textwidth}
-    \begin{center}
-    \begin{tikzpicture}[
-      stat/.style={draw=geccoBlue,rounded corners,inner sep=6pt,
-                   text width=3.2cm,align=center,font=\small}]
-      \node[stat,fill=geccoBlue!10] at (0,0) {$W = 1.0$};
-      \node[stat,fill=geccoBlue!15] at (0,-1.2) {$23.9\times$};
-      \node[stat,fill=geccoBlue!20] at (0,-2.4) {$18\times$ spread};
-      \node[stat,fill=geccoBlue!25] at (0,-3.6) {$p = 0.00008$};
-    \end{tikzpicture}
-    \end{center}
-  \end{columns}
-
-  \vspace{8pt}
-  {\small\color{gray} Future: larger populations, longer runs, heterogeneous island strategies}
-  \note{Summary with key numbers. Future work directions.}
-\end{frame}
-
-% ── Slide 20: Thank You ──────────────────────────────
+% ══════════════════════════════════════════════════════════
+% Slide 9: Thank You
+% ══════════════════════════════════════════════════════════
 {
-\setbeamercolor{background canvas}{bg=geccoBlue}
+\setbeamercolor{background canvas}{bg=geckoBlue}
 \begin{frame}[plain]
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[geckoBlue] (current page.south west) rectangle (current page.north east);
+  \end{tikzpicture}
   \vfill
-  \begin{center}
-    {\Huge\bfseries\color{white} Thank You}\\[16pt]
-    {\color{geccoAccent}\large Questions?}\\[24pt]
-    {\small\color{white}
-      Robin Langer \quad\textbar\quad langer.robin@gmail.com\\[4pt]
-      \texttt{github.com/RaggedR/categorical-evolution}}\\[16pt]
-    {\small\color{gray!60}\itshape
-      ``How you wire your islands matters more than what you evolve''}
-  \end{center}
+  \begin{flushleft}
+    \hspace{5mm}%
+    \begin{minipage}{0.65\textwidth}
+      {\Huge\bfseries\color{white} Thank You}\\[12pt]
+      {\color{geccoAccent}\large Questions?}\\[18pt]
+      {\small\color{white}
+        Robin Langer \quad\textbar\quad langer.robin@gmail.com\\[4pt]
+        \texttt{github.com/RaggedR/lyra-paper}}\\[12pt]
+      {\small\color{gray!60}\itshape
+        ``How you wire your islands matters\\
+        more than what you evolve''}
+    \end{minipage}
+  \end{flushleft}
   \vfill
 \end{frame}
 }
